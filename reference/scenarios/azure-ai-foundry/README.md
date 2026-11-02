@@ -14,5 +14,4 @@ server-side, across a process boundary the client cannot observe.
 
 The invoke-agent span's error handler records a correlated
 `gen_ai.client.invoke_agent.exception` WARN log for SDK calls and response
-processing. Regression tests exercise failures and client cleanup; the
-conformance scenario exercises the success path.
+processing. The conformance scenario exercises the success path.

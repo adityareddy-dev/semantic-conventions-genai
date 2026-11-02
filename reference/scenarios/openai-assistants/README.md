@@ -14,5 +14,4 @@ executes function-tool calls. The model call and `file_search` run server-side.
 
 The invoke-agent span's error handler records a correlated
 `gen_ai.client.invoke_agent.exception` WARN log for SDK calls, tool execution,
-and response processing. Regression tests exercise failures; the conformance
-scenario exercises the success path.
+and response processing. The conformance scenario exercises the success path.

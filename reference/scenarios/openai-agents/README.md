@@ -37,3 +37,7 @@ The ordinary tool, agent-as-tool, handoff, and command error handlers also recor
 this log and rethrow the exception. All handlers cover the full tool span,
 including argument and result processing. This scenario does not exercise those
 other error paths.
+
+Internal agent invocation also covers the SDK's `MaxTurnsExceeded` exception from
+`Runner.run` with `max_turns=0`, recorded as a correlated
+`gen_ai.invoke_agent.exception` WARN log with SDK exception details.

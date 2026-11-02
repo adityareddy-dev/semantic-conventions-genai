@@ -10,9 +10,17 @@ This document defines semantic conventions for recording exceptions on Generativ
 
 <!-- toc -->
 
+- [Operation-specific exception events](#operation-specific-exception-events)
 - [Generative AI client operation exception](#generative-ai-client-operation-exception)
 
 <!-- tocstop -->
+
+## Operation-specific exception events
+
+| Operation | Exception event |
+| --- | --- |
+| Client inference | [`gen_ai.client.inference.exception`](client-inference.md#event-gen_aiclientinferenceexception) |
+| Client embeddings | [`gen_ai.client.embeddings.exception`](client-embeddings.md#event-gen_aiclientembeddingsexception) |
 
 ## Generative AI client operation exception
 

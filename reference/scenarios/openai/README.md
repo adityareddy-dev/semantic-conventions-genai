@@ -19,10 +19,13 @@ Streaming TTFC is recorded on the span and metric at the first non-empty text, r
 
 The scenario also checks metadata filtering, non-text output, authentication, retry backoff, and streams with no output using the real SDK, mock HTTP responses, and a controlled clock. These assertions run through the existing `run-scenario openai --strict` entry point.
 
-Embeddings covers successful requests and an SDK error from a mock HTTP response.
-Failed requests record duration and zero input tokens with `error.type`.
-The SDK `BadRequestError` also produces a correlated
-`gen_ai.client.embeddings.exception` WARN log with SDK exception details.
+Embeddings exercises the SDK's `BadRequestError` from
+`client.embeddings.create` using a mock HTTP 400 response. The error handler
+records a correlated `gen_ai.client.embeddings.exception` WARN log and re-raises
+the exception. Failed requests record duration and zero input tokens with
+`error.type`.
 
-Inference also covers an SDK `RateLimitError` from a mock HTTP response, recorded
-as a correlated `gen_ai.client.inference.exception` WARN log with SDK exception details.
+Inference exercises the SDK's `RateLimitError` from
+`client.chat.completions.create` using a mock HTTP 429 response. The error handler
+records a correlated `gen_ai.client.inference.exception` WARN log and re-raises
+the exception.

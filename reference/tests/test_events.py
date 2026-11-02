@@ -13,6 +13,12 @@ class ExceptionEventReportTests(unittest.TestCase):
         entries = {entry.library: entry for entry in load_scenario_data_files()}
         cases = (
             (
+                "gen_ai.client.embeddings.exception",
+                "Client Embeddings Exception",
+                "openai",
+                "../../docs/gen-ai/client-embeddings.md#event-gen_aiclientembeddingsexception",
+            ),
+            (
                 "gen_ai.client.inference.exception",
                 "Client Inference Exception",
                 "openai",

@@ -16,7 +16,5 @@ execution.
 | execute_tool | Yes — `BaseTool.invoke()` runs the tool | ✅ Implemented |
 | execute_tool (command) | Yes — `ShellToolMiddleware`'s `shell` tool runs a general command | ✅ Implemented |
 
-The tool execution error handlers, including shell commands, record a correlated
-`gen_ai.execute_tool.exception` WARN log and rethrow the exception. They cover the
-full tool span, including argument and result processing. This scenario does not
-exercise those paths.
+The tool execution error handlers record a correlated
+`gen_ai.execute_tool.exception` WARN log. This scenario does not exercise those paths.

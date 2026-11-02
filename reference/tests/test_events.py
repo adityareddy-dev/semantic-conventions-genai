@@ -19,6 +19,12 @@ class ExceptionEventReportTests(unittest.TestCase):
                 "../../docs/gen-ai/client-embeddings.md#event-gen_aiclientembeddingsexception",
             ),
             (
+                "gen_ai.client.fetch_response.exception",
+                "Client Fetch Response Exception",
+                "openai",
+                "../../docs/gen-ai/gen-ai-spans.md#event-gen_aiclientfetch_responseexception",
+            ),
+            (
                 "gen_ai.client.inference.exception",
                 "Client Inference Exception",
                 "openai",

@@ -42,6 +42,12 @@ class ExceptionEventReportTests(unittest.TestCase):
                 "openai-agents",
                 "../../docs/gen-ai/gen-ai-spans.md#event-gen_aiexecute_toolexception",
             ),
+            (
+                "gen_ai.invoke_agent.exception",
+                "Invoke Agent Exception",
+                "openai-agents",
+                "../../docs/gen-ai/gen-ai-agent-spans.md#event-gen_aiinvoke_agentexception",
+            ),
         )
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "README.md"

@@ -54,6 +54,7 @@ _EVENTS = {
     "gen_ai.client.invoke_agent.exception": "Client Invoke Agent Exception",
     "gen_ai.evaluation.result": "Evaluation Result",
     "gen_ai.execute_tool.exception": "Execute Tool Exception",
+    "gen_ai.invoke_agent.exception": "Invoke Agent Exception",
 }
 
 # Client duration and token usage describe individual calls, unlike the

@@ -136,13 +136,13 @@ def run_invoke_agent(client, agent_id):
                     ),
                 )
             print(f"    -> {text[:60]}")
-        except Exception as error:
-            span.set_status(StatusCode.ERROR, str(error))
-            span.set_attribute("error.type", f"{type(error).__module__}.{type(error).__qualname__}")
+        except Exception as e:
+            span.set_status(StatusCode.ERROR, str(e))
+            span.set_attribute("error.type", f"{type(e).__module__}.{type(e).__qualname__}")
             reference_event_logger().emit(
                 event_name="gen_ai.client.invoke_agent.exception",
                 severity_number=SeverityNumber.WARN,
-                exception=error,
+                exception=e,
             )
             raise
 
@@ -161,8 +161,8 @@ def run_invoke_agent_error(client, agent_id):
     with patch.object(client._endpoint.http_session, "send", return_value=response):
         try:
             run_invoke_agent(client, agent_id)
-        except client.exceptions.ValidationException as error:
-            print(f"    -> expected SDK error: {error}")
+        except client.exceptions.ValidationException as e:
+            print(f"    -> expected SDK error: {e}")
         else:
             raise AssertionError("Expected the SDK to reject the agent invocation request")
 

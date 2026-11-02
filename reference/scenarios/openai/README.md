@@ -28,6 +28,7 @@ The SDK `BadRequestError` also produces a correlated
 Inference also covers an SDK `RateLimitError` from a mock HTTP response, recorded
 as a correlated `gen_ai.client.inference.exception` WARN log with SDK exception details.
 
-Fetch response also covers an SDK `NotFoundError` from a mock HTTP response,
-recorded as a correlated `gen_ai.client.fetch_response.exception` WARN log with SDK exception details.
+Fetch response records exceptions from retrieval, stream iteration, and response
+processing as correlated `gen_ai.client.fetch_response.exception` WARN logs.
+The scenario covers an SDK `NotFoundError` from a mock HTTP response.
 A successfully fetched response whose original generation failed does not produce this event.

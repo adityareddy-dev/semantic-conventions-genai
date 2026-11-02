@@ -50,6 +50,7 @@ _EVENTS = {
     "gen_ai.client.embeddings.exception": "Client Embeddings Exception",
     "gen_ai.client.inference.exception": "Client Inference Exception",
     "gen_ai.client.inference.operation.details": "Inference Operation Details",
+    "gen_ai.client.invoke_agent.exception": "Client Invoke Agent Exception",
     "gen_ai.evaluation.result": "Evaluation Result",
 }
 

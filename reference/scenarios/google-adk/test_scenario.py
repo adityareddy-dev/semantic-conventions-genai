@@ -2,12 +2,14 @@
 
 import os
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from google.adk.models.google_llm import Gemini
 from google.adk.models.llm_response import LlmResponse
 from google.genai import types
-from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry import trace
+from opentelemetry._logs import SeverityNumber
+from opentelemetry.sdk.trace import Span, TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
 
@@ -16,6 +18,61 @@ with patch.dict(os.environ, {"MOCK_LLM_URL": "http://127.0.0.1:9999"}):
 
 
 class NativeTransferTests(unittest.TestCase):
+    def test_handoff_processing_and_usage_finalization_failures_record_one_exception(self):
+        original_set_attribute = Span.set_attribute
+        for attribute in ("gen_ai.output.messages", "gen_ai.usage.input_tokens"):
+            with self.subTest(attribute=attribute):
+                exporter = InMemorySpanExporter()
+                provider = TracerProvider()
+                self.addCleanup(provider.shutdown)
+                provider.add_span_processor(SimpleSpanProcessor(exporter))
+                error = RuntimeError(f"{attribute} failed")
+                events = []
+
+                async def respond(model, llm_request, stream=False):
+                    yield LlmResponse(
+                        content=types.Content(role="model", parts=[types.Part(text="Sunny.")]),
+                        finish_reason=types.FinishReason.STOP,
+                        usage_metadata=types.GenerateContentResponseUsageMetadata(
+                            prompt_token_count=12, candidates_token_count=4
+                        ),
+                    )
+
+                def set_attribute(span, key, value, attribute=attribute, error=error):
+                    if key == attribute:
+                        raise error
+                    return original_set_attribute(span, key, value)
+
+                def emit(events=events, **kwargs):
+                    events.append((trace.get_current_span().get_span_context(), kwargs))
+
+                with (
+                    patch.object(scenario, "_reference_tracer", provider.get_tracer("test")),
+                    patch.object(scenario, "reference_event_logger", return_value=Mock(emit=emit)),
+                    patch.object(Gemini, "generate_content_async", respond),
+                    patch.object(Span, "set_attribute", set_attribute),
+                    self.assertRaises(RuntimeError) as raised,
+                ):
+                    scenario.run_multi_agent_handoff_reference()
+                self.assertIs(raised.exception, error)
+                agents = [
+                    span
+                    for span in exporter.get_finished_spans()
+                    if span.attributes.get("gen_ai.operation.name") == "invoke_agent"
+                ]
+                self.assertEqual(len(agents), 1)
+                span = agents[0]
+                self.assertEqual(span.status.status_code, trace.StatusCode.ERROR)
+                self.assertEqual(span.attributes["error.type"], "builtins.RuntimeError")
+                self.assertEqual(span.events, ())
+                self.assertEqual(len(events), 1)
+                context, event = events[0]
+                self.assertEqual(context.span_id, span.context.span_id)
+                self.assertEqual(event["event_name"], "gen_ai.invoke_agent.exception")
+                self.assertEqual(event["severity_number"], SeverityNumber.WARN)
+                self.assertIs(event["exception"], error)
+                self.assertFalse(trace.get_current_span().is_recording())
+
     def test_transfer_records_caller_target_and_separate_agent_execution(self):
         exporter = InMemorySpanExporter()
         provider = TracerProvider()

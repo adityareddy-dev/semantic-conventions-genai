@@ -12,6 +12,5 @@ executes function-tool calls. The model call and `file_search` run server-side.
 | inference (`chat`) | No — runs server-side inside the assistant run | ✅ Correctly not emitted |
 | retrieval | No — `file_search` runs server-side | ✅ Correctly not emitted |
 
-The invoke-agent span's error handler records a correlated
-`gen_ai.client.invoke_agent.exception` WARN log for SDK calls, tool execution,
-and response processing. The conformance scenario exercises the success path.
+The client agent invocation error handler records a correlated
+`gen_ai.client.invoke_agent.exception` WARN log. This scenario does not exercise that path.
